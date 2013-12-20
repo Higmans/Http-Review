@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.app.Activity;
+import android.content.Intent;
 public class MainActivity extends Activity implements OnClickListener {
 	EditText etLogin;
 	EditText etPassword;
@@ -61,9 +62,10 @@ public class MainActivity extends Activity implements OnClickListener {
 				@Override
 				public void run() {
 					HttpClient client = new DefaultHttpClient();
-					String requestGet = "http://httpbin.org/get?Login=" + 
+					String requestGet = "http://ukr.net";
+					/*String requestGet = "http://httpbin.org/get?Login=" + 
 										etLogin.getText().toString() + "&" + 
-										"Password?" + etPassword.getText().toString();
+										"Password?" + etPassword.getText().toString();*/
 					HttpGet get = new HttpGet(requestGet);
 					HttpResponse response = null;
 					try {
@@ -87,14 +89,15 @@ public class MainActivity extends Activity implements OnClickListener {
 						e.printStackTrace();
 					}
 					final String  rtst = responseString;
-					activity.runOnUiThread(new Runnable() {
-						
+					Intent i = new Intent(activity, WebViewActivity.class);
+					i.putExtra("code", rtst);
+					startActivity(i);
+					activity.runOnUiThread(new Runnable() {						
 						@Override
 						public void run() {
 							tvResponse.setText(rtst);							
 						}
-					});
-					
+					});					
 				}
 			}).start();
 			
@@ -137,11 +140,12 @@ public class MainActivity extends Activity implements OnClickListener {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					final HttpResponse finalResponse = response;
 					final String  rtst = responseString;
 					activity.runOnUiThread(new Runnable() {						
 						@Override
 						public void run() {
-							tvResponse.setText(rtst);
+							tvResponse.setText(finalResponse.getStatusLine().toString());
 						}
 					});
 				}
